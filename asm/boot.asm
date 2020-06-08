@@ -1,7 +1,7 @@
 [bits 16]
 [org 0x7c00]
 
-jmp _enter_prot_mode
+jmp _init_prot_mode
 
 gdt_begin:
 
@@ -36,7 +36,7 @@ gdt_desc:
 CODE_SEG_OFFSET equ gdt_entry_1 - gdt_begin
 DATA_SEG_OFFSET equ gdt_entry_2 - gdt_begin
 
-_enter_prot_mode:
+_init_prot_mode:
     cli
     lgdt [gdt_desc]
     mov eax, cr0
@@ -46,6 +46,7 @@ _enter_prot_mode:
     jmp CODE_SEG_OFFSET:_prot_begin
 
 [bits 32]
+%include "./str.32.inc"
 _prot_begin:
     mov ax, DATA_SEG_OFFSET
     mov ds, ax
@@ -56,8 +57,20 @@ _prot_begin:
 
     mov ebp, 0x90000 ; 600KB free space here, until 0x7c00 + 0x200 byte (MBR sector 0)
     mov esp, ebp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 32BIT PROTECTED MODE BEGIN ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+_dead_loop:
+    mov ebx, _motd_32
+    call println_vga
+    mov ebx, _motd_32p
+    call println_vga
+    jmp _dead_loop
+
+_motd_32:
+    db '----- CPU is in INTEL x86 protected mode now -----', 0x0
+_motd_32p:
+    db '+++++ CPU is in INTEL x86 protected mode now +++++', 0x0
     
-    
+%include "./mbr_end.inc"    
 
 
