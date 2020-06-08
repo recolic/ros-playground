@@ -1,16 +1,16 @@
 
-build:
-	cc -c boot.c -o boot.o -m32
-	ld -o boot.img -Ttext 0x0 --oformat binary boot.o -m elf_i386
-	# objcopy -O binary boot.o boot.img
-	# [[ $$(stat boot.img --printf='%s') -lt 510 ]]
-	truncate --size=510 boot.img
-	printf '\x55\xAA' >> boot.img
+bootloader:
+	$(MAKE) -C bootloader
 
-run: build
-	qemu-system-x86_64 boot.img
+kernel:
+	$(MAKE) -C kernel
 
+build: bootloader kernel
 
-clean:
-	rm *.o
+assemble: build
+	cat bootloader/boot.img kernel/kernel.img > disk.img
+
+run: assemble
+	qemu-system-x86_64 disk.img
+
 

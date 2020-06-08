@@ -58,18 +58,17 @@ _prot_begin:
     mov ebp, 0x90000 ; 600KB free space here, until 0x7c00 + 0x200 byte (MBR sector 0)
     mov esp, ebp
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 32BIT PROTECTED MODE BEGIN ;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-_dead_loop:
     mov ebx, _motd_32
     call println_vga
-    mov ebx, _motd_32p
-    call println_vga
-    jmp _dead_loop
+
+    KERN_ADDR equ 0x1000
+
+    jmp $
 
 _motd_32:
-    db '----- CPU is in INTEL x86 protected mode now -----', 0x0
-_motd_32p:
-    db '+++++ CPU is in INTEL x86 protected mode now +++++', 0x0
+    db '[ENTER X86 MODE SUCC] [LOADING KERN..]', 0x0
+_motd_endk:
+    db '[ENTER X86 MODE SUCC] [LOADING KERN..] [KERN EXITED]', 0x0
     
 %include "./mbr_end.inc"    
 
