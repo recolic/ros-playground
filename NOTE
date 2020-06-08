@@ -1,0 +1,2 @@
+dd if=/dev/zero of=out.img bs=512K count=16
+VBoxManage convertfromraw out.img out.vdi --format vdi
