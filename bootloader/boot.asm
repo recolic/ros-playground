@@ -2,7 +2,30 @@
 [org 0x7c00]
 
 mov [_boot_drive_id], dl
+    ; Load the kernel image from boot disk, disk offset 512B to 64KB.
+    KERN_ADDR equ 0x7e00
+    mov ah, 0x02
+    mov dl, [_boot_drive_id]
+    mov ch, 0
+    mov dh, 0
+    mov cl, 2 ; from the second one,
+    mov al, 127 ; read 127 sectors in total.
+    mov bx, KERN_ADDR
+    int 0x13 ; Set carry on error, and set AL to sectors that actual read.
+
+    jc disk_io_error
+    mov dl, 0x7f
+    cmp dl, al
+    jne disk_io_error
+    ; kernel successfully loaded now!
+    mov bx, _motd_kern_ok
+    call println_bios
+
 jmp _init_prot_mode
+
+%include "./str.16.inc"
+
+
 
 gdt_begin:
 
@@ -62,25 +85,6 @@ _prot_begin:
     mov ebx, _motd_32
     call println_vga
 
-
-    ; Load the kernel image from boot disk, disk offset 512B to 64KB.
-    KERN_ADDR equ 0x7e00
-    mov ah, 0x02
-    mov ch, 0
-    mov dh, 0
-    mov cl, 2 ; from the second one,
-    mov al, 127 ; read 127 sectors in total.
-    mov bx, KERN_ADDR
-    int 0x13 ; Set carry on error, and set AL to sectors that actual read.
-    jmp _stall
-
-    jc disk_io_error
-    mov dl, 0x7f
-    cmp dl, al
-    jne disk_io_error
-    ; kernel successfully loaded now!
-    mov ebx, _motd_kern_ok
-    call println_vga
 
 
 _stall:
