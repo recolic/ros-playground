@@ -1,9 +1,13 @@
 
+default: assemble
+
 bootloader:
 	$(MAKE) -C bootloader
 
 kernel:
 	$(MAKE) -C kernel
+
+.PHONY: bootloader kernel
 
 build: bootloader kernel
 
