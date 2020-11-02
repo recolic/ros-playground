@@ -1,3 +1,5 @@
+; This code file would be compiled and placed in MBR first block. 
+
 [bits 16]
 [org 0x7c00]
 
