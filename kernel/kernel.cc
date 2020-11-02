@@ -1,20 +1,21 @@
 
 
-char *vga_begin = (char *)0xb8000;
-void push_char(char c, char color) {
-    static int pos = 0;
-    vga_begin[pos++] = c;
-    vga_begin[pos++] = color;
+#include "include/vga.hpp"
+#include "include/bus_io.hpp"
+
+void test_dummy_function() {
+    auto tmp = read_byte_from_bus(0x3f2);
+    tmp |= 0x08;
+    write_byte_to_bus(0x3f2, tmp);
 }
 
 void main() {
-    int pos = 0;
-    for(int cter = 0; cter < 256; ++cter) {
-        push_char(cter % 10 + '0', cter);
-        for(int i = 1; i < 10; ++i) {
-            push_char(i + '0', cter);
+    for(auto y = 0; y < 25; ++y) {
+        for(auto x = 0; x < 80; ++x) {
+            char c = x%10 + '0';
+            char color = x + y*80;
+            set_char(x, y, c, color);
         }
     }
-
 }
 

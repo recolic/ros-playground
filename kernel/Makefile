@@ -10,7 +10,7 @@ head:
 	nasm -f elf image_head.asm -o image_head.o
 
 kernel:
-	g++ -ffreestanding -fno-pie -c kernel.cc -o kernel.o -m32
+	g++ -ffreestanding -fno-pie -c kernel.cc -o kernel.o -m32 -std=c++17
 
 clean:
 	rm *.o *.img

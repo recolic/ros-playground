@@ -76,11 +76,11 @@ disk_io_error:
 
 
 _init_prot_mode:
-    cli
-    lgdt [gdt_desc]
+    cli ; turn off interrupt, until we set interrupt vector for 32b protected mode.
+    lgdt [gdt_desc] ; set GDT,
     mov eax, cr0
     or eax, 0x1
-    mov cr0, eax
+    mov cr0, eax ; and set CR0.
     ; We're almost in 32bit protected mode now. Flush the pipeline by far jump. 
     jmp CODE_SEG_OFFSET:_prot_begin
 
