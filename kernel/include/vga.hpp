@@ -1,17 +1,51 @@
 #ifndef ROS_KERN_VGA_HPP
 #define ROS_KERN_VGA_HPP
 
-inline char *vga_begin = (char *)0xb8000;
-void push_char(char c, char color) {
-    static int pos = 0;
-    vga_begin[pos++] = c;
-    vga_begin[pos++] = color;
+#include "stdint.hpp"
+#include "stdlib.hpp"
+
+#define VGA_BEGIN_ADDR ((uint16_t *)0xb8000)
+constexpr uint16_t VGA_WIDTH = 80;
+constexpr uint16_t VGA_HEIGHT = 25;
+constexpr uint16_t VGA_MAKE_CHAR(char c, uint8_t color) {
+    return (color << 8) + uint8_t(c);
+}
+constexpr uint8_t default_color = 0x0f;
+
+
+inline void trigger_scroll(uint16_t *pos) {
+    for(uint16_t row = 1; row < VGA_HEIGHT; ++row) {
+        memcpy(VGA_BEGIN_ADDR + (row-1)*VGA_WIDTH, VGA_BEGIN_ADDR + row*VGA_WIDTH, VGA_WIDTH);
+    }
+    memset(VGA_BEGIN_ADDR + (VGA_HEIGHT-1)*VGA_WIDTH, VGA_MAKE_CHAR(0, 0), VGA_WIDTH);
+    (*pos) -= VGA_WIDTH;
 }
 
-void set_char(int x, int y, char c, char color) {
-    auto pos = x + 80 * y;
-    vga_begin[pos*2] = c;
-    vga_begin[pos*2+1] = color;
+inline void set_char(uint16_t x, uint16_t y, char c, char color) {
+    VGA_BEGIN_ADDR[y*VGA_WIDTH + x] = VGA_MAKE_CHAR(c, color);
+}
+
+inline void put_char(char c, uint8_t color) {
+    static uint16_t pos = 0;
+    if(pos >= VGA_WIDTH * VGA_HEIGHT)
+        trigger_scroll(&pos);
+
+    switch(c) {
+    case '\n':
+        pos += VGA_WIDTH;
+        [[fallthrough]]; // unix \n implies \r.
+    case '\r':
+        pos -= pos % VGA_WIDTH;
+        break;
+    default:
+        VGA_BEGIN_ADDR[pos++] = VGA_MAKE_CHAR(c, color);
+    }
+}
+
+inline void print(const char *cstr, uint8_t color = default_color) {
+    while(*cstr != '\0') {
+        put_char(*(cstr++), color);
+    }
 }
 
 #endif

@@ -17,5 +17,10 @@ void main() {
             set_char(x, y, c, color);
         }
     }
+    print("Hello world!\n");
+    print("Hello world!\n", 0xb1);
+    print("Hello world!\n", 0xae);
+    print("Hello world!\n", 0x5c);
+    print("Hello world!\n");
 }
 
