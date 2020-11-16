@@ -14,13 +14,13 @@ void main() {
         for(auto x = 0; x < 80; ++x) {
             char c = x%10 + '0';
             char color = x + y*80;
-            set_char(x, y, c, color);
+            set_char(x, y, ' ', 0x0f);
         }
     }
     print("Hello world!\n");
     print("Hello world!\n", 0xb1);
     print("Hello world!\n", 0xae);
     print("Hello world!\n", 0x5c);
-    print("Hello world!\n");
+    print("Hello world! This is recolic's test message, \n");
 }
 
