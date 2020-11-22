@@ -1,20 +1,25 @@
 
-default: assemble
+default: assemble-legacy
 
-bootloader:
-	$(MAKE) -C bootloader
+bootloader-legacy:
+	$(MAKE) -C bootloader-legacy
+
+bootloader-uefi:
+	$(MAKE) -C bootloader-legacy
 
 kernel:
 	$(MAKE) -C kernel
 
-.PHONY: bootloader kernel
+.PHONY: bootloader-legacy bootloader-uefi kernel
 
-build: bootloader kernel
+build: bootloader-legacy bootloader-uefi kernel
 
-assemble: build
-	cat bootloader/boot.img kernel/kernel.img > disk.img
+assemble-legacy: build
+	cat bootloader-legacy/boot.img kernel/kernel.img > legacy.img
 
-run: assemble
-	qemu-system-x86_64 disk.img
+assemble-uefi: build
+
+run-legacy: assemble-legacy
+	qemu-system-x86_64 legacy.img
 
 
