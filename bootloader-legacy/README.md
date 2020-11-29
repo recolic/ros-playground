@@ -26,7 +26,7 @@ Just used this mode to launch 64bit long mode. No paging enabled.
 - 64bit long mode age
 
 0x1000 - 0x5000 : 64bit long mode paging table**s**
-0x00100000 - 0x00300000 : 512 * 4K pages, before kernel initializing page table in C++.
+0x00000000 - 0x00200000 : 512 * 4K pages, before the kernel initializing page table in C++.
 
 ## bootloader(legacy) disk model
 

@@ -2,38 +2,38 @@
 ; requires: str.32.inc
 ; runs in 32bit protection mode
 
-test_cpuid_support:
-    ; Check if CPUID is supported by attempting to flip the ID bit (bit 21) in
-    ; the FLAGS register. If we can flip it, CPUID is available.
- 
-    ; Copy FLAGS in to EAX via stack
-    pushfd
-    pop eax
- 
-    ; Copy to ECX as well for comparing later on
-    mov ecx, eax
- 
-    ; Flip the ID bit
-    xor eax, 1 << 21
- 
-    ; Copy EAX to FLAGS via the stack
-    push eax
-    popfd
- 
-    ; Copy FLAGS back to EAX (with the flipped bit if CPUID is supported)
-    pushfd
-    pop eax
- 
-    ; Restore FLAGS from the old version stored in ECX (i.e. flipping the ID bit
-    ; back if it was ever flipped).
-    push ecx
-    popfd
- 
-    ; Compare EAX and ECX. If they are equal then that means the bit wasn't
-    ; flipped, and CPUID isn't supported.
-    sub eax, ecx
-    ; eax != 0 if CPUID supported, eax==0 if not supported. 
-    ret
+;test_cpuid_support:
+;    ; Check if CPUID is supported by attempting to flip the ID bit (bit 21) in
+;    ; the FLAGS register. If we can flip it, CPUID is available.
+; 
+;    ; Copy FLAGS in to EAX via stack
+;    pushfd
+;    pop eax
+; 
+;    ; Copy to ECX as well for comparing later on
+;    mov ecx, eax
+; 
+;    ; Flip the ID bit
+;    xor eax, 1 << 21
+; 
+;    ; Copy EAX to FLAGS via the stack
+;    push eax
+;    popfd
+; 
+;    ; Copy FLAGS back to EAX (with the flipped bit if CPUID is supported)
+;    pushfd
+;    pop eax
+; 
+;    ; Restore FLAGS from the old version stored in ECX (i.e. flipping the ID bit
+;    ; back if it was ever flipped).
+;    push ecx
+;    popfd
+; 
+;    ; Compare EAX and ECX. If they are equal then that means the bit wasn't
+;    ; flipped, and CPUID isn't supported.
+;    sub eax, ecx
+;    ; eax != 0 if CPUID supported, eax==0 if not supported. 
+;    ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -41,12 +41,12 @@ test_support_long_mode:
     ; test if possible to enter x64 mode. 
     ; return value in eax. 
     ; return 0 = OK. 1 = CPUID_NOT_AVAIL, 2 = CPUID_EXT_NOT_AVAIL, 3 = LONGMODE_NOT_AVAIL
-    call test_cpuid_support
-    cmp eax, 0
-    jne _cpuid_supported
-    mov eax, 1
-    ret
-_cpuid_supported:
+;    call test_cpuid_support
+;    cmp eax, 0
+;    jne _cpuid_supported
+;    mov eax, 1
+;    ret
+;_cpuid_supported:
     mov eax, 0x80000000     ; Set the A-register to 0x80000000.
     cpuid                   ; CPU identification.
     cmp eax, 0x80000001     ; Compare the A-register with 0x80000001.
@@ -118,8 +118,8 @@ inline_enter_long_mode:
     mov edi, 0x4000
 
     ; fill all entries of the PT. This is a trick, which not setting all bits in entry. 
-    ; This page table has 512 4K page, 0x00100000 - 0x00300000.
-    mov ebx, 0x00100003 ; BIT M--12 contains PageFrameNumber. 
+    ; This page table has 512 4K page, 0x00000000 - 0x00200000.
+    mov ebx, 0x00000003 ; BIT M--12 contains PageFrameNumber. 
     mov ecx, 512 ; counter
 _set_one_entry:
     mov DWORD [edi], ebx
@@ -142,6 +142,7 @@ _set_one_entry:
     or eax, 1 << 31              ; Set the PG-bit, which is the 32nd bit (bit 31).
     mov cr0, eax                 ; Set control register 0 to the A-register.
 
+
     ;;;;;;;;;;;;;;;;; Section 3: enter 64bit long mode
     lgdt [GDT64.Pointer]         ; Load the 64-bit global descriptor table.
     jmp GDT64.Code:Realm64       ; Set the code segment and enter 64-bit long mode.
@@ -157,6 +158,8 @@ Realm64:
     mov gs, ax                    ; Set the G-segment to the A-register.
     mov ss, ax                    ; Set the stack segment to the A-register.
     ; done
+    ; 32bit print_vga not working in 64bit mode
+
 
 
 

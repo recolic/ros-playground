@@ -106,7 +106,6 @@ _prot_begin:
     je _test_passed
     mov ebx, _motd_no_long_mode
     call println_vga
-    jmp _stall ; debug, tmp
     jmp _call_kern_32
 _test_passed:
 
@@ -140,17 +139,20 @@ _stall:
     jmp $
 
 _motd_disk_error:
-    db 'DISK_IO_ERROR', 0x0
+    db 'MED', 0x0
 _motd_32:
-    db '[LOAD KERN SUCC] [ENTER X86 MODE SUCC]', 0x0
+    db 'M32', 0x0
 _motd_kern_ok:
-    db '[LOAD KERN SUCC]', 0x0
+    db 'MKN', 0x0
 _motd_endk:
-    db '[LOAD KERN SUCC] [ENTER X86 MODE SUCC] [KERN EXITED]', 0x0
+    db 'MEK', 0x0
 _motd_no_long_mode:
-    db '[ENTER LONG MODE ERR] NOT_SUPPORTED', 0x0
+    db 'MNL', 0x0
 _boot_drive_id:
     db 0x0
+
+_motd_debug_point:
+    db 'MDB', 0x0
     
 %include "./mbr_end.inc"    
 
