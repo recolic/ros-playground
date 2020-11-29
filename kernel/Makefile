@@ -12,6 +12,9 @@ head:
 kernel:
 	g++ -ffreestanding -fno-pie -c kernel.cc -o kernel.o -m32 -std=c++17
 
+kernel_x64:
+	g++ -ffreestanding -fno-pie -c kernel.cc -o kernel.o -m64 -std=c++17
+
 clean:
 	rm *.o *.img
 
