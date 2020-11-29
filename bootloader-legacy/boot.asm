@@ -100,13 +100,42 @@ _prot_begin:
     mov ebx, _motd_32
     call println_vga
 
+    ; Test if 64bit available
+    call test_support_long_mode
+    cmp eax, 0
+    je _test_passed
+    mov ebx, _motd_no_long_mode
+    call println_vga
+    jmp _stall ; debug, tmp
+    jmp _call_kern_32
+_test_passed:
+
+    jmp inline_enter_long_mode
+%include "./inline_x64lib.inc"
+    jmp _call_kern_64
+
+[bits 32]
+_call_kern_32:
     ; Enter the kernel. This should never return.
     call KERN_ADDR
 
     ; Kernel returns.
     mov ebx, _motd_endk
     call println_vga
+    jmp _stall
 
+[bits 64]
+_call_kern_64:
+    ; Enter the kernel. This should never return.
+    call KERN_ADDR
+
+    ; Kernel returns.
+    mov ebx, _motd_endk
+    call println_vga
+    jmp _stall
+
+
+[bits 32]
 _stall:
     jmp $
 
@@ -118,6 +147,8 @@ _motd_kern_ok:
     db '[LOAD KERN SUCC]', 0x0
 _motd_endk:
     db '[LOAD KERN SUCC] [ENTER X86 MODE SUCC] [KERN EXITED]', 0x0
+_motd_no_long_mode:
+    db '[ENTER LONG MODE ERR] NOT_SUPPORTED', 0x0
 _boot_drive_id:
     db 0x0
     
