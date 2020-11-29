@@ -70,7 +70,7 @@ _load_kern:
 disk_io_error:
     mov bx, _motd_disk_error
     call println_bios
-    jmp _stall
+    jmp $
 
 
 
@@ -121,7 +121,7 @@ _call_kern_32:
     ; Kernel returns.
     mov ebx, _motd_endk
     call println_vga
-    jmp _stall
+    jmp $
 
 [bits 64]
 _call_kern_64:
@@ -129,14 +129,11 @@ _call_kern_64:
     call KERN_ADDR
 
     ; Kernel returns.
-    mov ebx, _motd_endk
-    call println_vga
-    jmp _stall
-
-
-[bits 32]
-_stall:
+    ;mov ebx, _motd_endk
+    ;call println_vga
+    ; TODO: add 64bit println_vga and error msg
     jmp $
+
 
 _motd_disk_error:
     db 'MED', 0x0

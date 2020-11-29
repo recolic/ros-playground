@@ -12,7 +12,6 @@ constexpr uint16_t VGA_MAKE_CHAR(char c, uint8_t color) {
 }
 constexpr uint8_t default_color = 0x0f;
 
-
 inline void trigger_scroll(uint16_t *pos) {
     for(uint16_t row = 1; row < VGA_HEIGHT; ++row) {
         memcpy(VGA_BEGIN_ADDR + (row-1)*VGA_WIDTH, VGA_BEGIN_ADDR + row*VGA_WIDTH, VGA_WIDTH);

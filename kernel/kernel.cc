@@ -14,7 +14,7 @@ void main() {
         for(auto x = 0; x < 80; ++x) {
             char c = x%10 + '0';
             char color = x + y*80;
-            set_char(x, y, ' ', 0x0f);
+            set_char(x, y, 'F', 0x0f);
         }
     }
     print("Hello world!\n");

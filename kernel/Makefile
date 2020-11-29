@@ -16,11 +16,11 @@ assemble: kernel head
 	truncate --size=65024 kernel.img
 
 head:
-	nasm -f elf -DBITS=$(BITS) image_head.asm -o image_head.o
+	nasm -f elf$(BITS) -DTARGET_BITS=$(BITS) image_head.asm -o image_head.o
 
 kernel:
 	g++ -ffreestanding -fno-pie -c kernel.cc -o kernel.o -m$(BITS) -std=c++17
 
 clean:
-	rm *.o *.img
+	rm -f *.o *.img
 

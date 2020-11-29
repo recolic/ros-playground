@@ -1,4 +1,4 @@
-[bits 32]
+[bits TARGET_BITS]
 [extern main]
 call main
 ret
