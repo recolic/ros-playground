@@ -33,4 +33,9 @@ Just used this mode to launch 64bit long mode. No paging enabled.
 0-511Byte : bootloader.img from boot.asm, MBR flag  
 512B - 64KiB : kernel.img. executes from 512Byte first instruction. 
 
+## works and TODO
+
+Currently, paging for 32bit bootloader not implemented. Not planned. 
+
+kernel currently working on both 32bit(without paging) and 64bit mode. But in the future, will work only in 64bit mode. 
 

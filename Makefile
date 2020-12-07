@@ -5,7 +5,7 @@ bootloader-legacy:
 	$(MAKE) -C bootloader-legacy
 
 bootloader-uefi:
-	$(MAKE) -C bootloader-legacy
+	$(MAKE) -C bootloader-uefi
 
 kernel:
 	$(MAKE) -C kernel
