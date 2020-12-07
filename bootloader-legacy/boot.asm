@@ -70,7 +70,7 @@ _load_kern:
 disk_io_error:
     mov bx, _motd_disk_error
     call println_bios
-    jmp _stall
+    jmp $
 
 
 
@@ -100,26 +100,56 @@ _prot_begin:
     mov ebx, _motd_32
     call println_vga
 
+    ; Test if 64bit available
+    call test_support_long_mode
+    cmp eax, 0
+    je _test_passed
+    mov ebx, _motd_no_long_mode
+    call println_vga
+    jmp _call_kern_32
+_test_passed:
+
+    jmp inline_enter_long_mode
+%include "./inline_x64lib.inc"
+    jmp _call_kern_64
+
+[bits 32]
+_call_kern_32:
     ; Enter the kernel. This should never return.
     call KERN_ADDR
 
     ; Kernel returns.
     mov ebx, _motd_endk
     call println_vga
-
-_stall:
     jmp $
 
+[bits 64]
+_call_kern_64:
+    ; Enter the kernel. This should never return.
+    call KERN_ADDR
+
+    ; Kernel returns.
+    ;mov ebx, _motd_endk
+    ;call println_vga
+    ; TODO: add 64bit println_vga and error msg
+    jmp $
+
+
 _motd_disk_error:
-    db 'DISK_IO_ERROR', 0x0
+    db 'MED', 0x0
 _motd_32:
-    db '[LOAD KERN SUCC] [ENTER X86 MODE SUCC]', 0x0
+    db 'M32', 0x0
 _motd_kern_ok:
-    db '[LOAD KERN SUCC]', 0x0
+    db 'MKN', 0x0
 _motd_endk:
-    db '[LOAD KERN SUCC] [ENTER X86 MODE SUCC] [KERN EXITED]', 0x0
+    db 'MEK', 0x0
+_motd_no_long_mode:
+    db 'MNL', 0x0
 _boot_drive_id:
     db 0x0
+
+_motd_debug_point:
+    db 'MDB', 0x0
     
 %include "./mbr_end.inc"    
 
