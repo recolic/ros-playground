@@ -100,6 +100,7 @@ _prot_begin:
     mov ebx, _motd_32
     call println_vga
 
+%if TARGET_BITS == 64
     ; Test if 64bit available
     call test_support_long_mode
     cmp eax, 0
@@ -112,6 +113,9 @@ _test_passed:
     jmp inline_enter_long_mode
 %include "./inline_x64lib.inc"
     jmp _call_kern_64
+%else
+    jmp _call_kern_32
+%endif
 
 [bits 32]
 _call_kern_32:

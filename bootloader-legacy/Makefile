@@ -1,11 +1,12 @@
+BITS ?= 64
+
 build:
-	nasm -f bin boot.asm -o boot.img
-
-build_x86:
-
-build_x86_64:
-
+	nasm -f bin boot.asm -DTARGET_BITS=$(BITS) -o boot.img
 
 run: build
 	qemu-system-x86_64 boot.img
+
+clean:
+	rm -f boot.img
+
 

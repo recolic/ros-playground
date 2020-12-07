@@ -1,14 +1,16 @@
 
+BITS ?= 64
+
 default: assemble-legacy
 
 bootloader-legacy:
-	$(MAKE) -C bootloader-legacy
+	BITS=$(BITS) $(MAKE) -C bootloader-legacy
 
 bootloader-uefi:
-	$(MAKE) -C bootloader-uefi
+	# BITS=$(BITS) $(MAKE) -C bootloader-uefi
 
 kernel:
-	$(MAKE) -C kernel
+	BITS=$(BITS) $(MAKE) -C kernel
 
 .PHONY: bootloader-legacy bootloader-uefi kernel
 
