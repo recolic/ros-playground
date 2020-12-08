@@ -24,4 +24,9 @@ assemble-uefi: build
 run-legacy: assemble-legacy
 	qemu-system-x86_64 legacy.img
 
+clean:
+	$(MAKE) -C bootloader-legacy clean
+	# $(MAKE) -C bootloader-uefi clean
+	$(MAKE) -C kernel clean
+
 
