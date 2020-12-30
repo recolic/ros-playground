@@ -17,6 +17,10 @@ kernel:
 build: bootloader-legacy bootloader-uefi kernel
 
 assemble-legacy: build
+	# Sector 1 = bootloader, Sector 2 - (512B TO 64K) = kernel
+	# Extend kernel.img to correct size. 
+	test $$(stat -c %s kernel/kernel.img) -le 65024
+	truncate --size=65024 kernel/kernel.img
 	cat bootloader-legacy/boot.img kernel/kernel.img > legacy.img
 
 assemble-uefi: build

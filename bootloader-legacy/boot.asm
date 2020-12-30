@@ -139,6 +139,7 @@ _call_kern_64:
     jmp $
 
 
+; To save binary space
 _motd_disk_error:
     db 'MED', 0x0
 _motd_32:
