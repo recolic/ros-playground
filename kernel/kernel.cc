@@ -2,6 +2,7 @@
 
 #include "include/vga.hpp"
 #include "include/bus_io.hpp"
+#include "include/kutils.hpp"
 
 void test_dummy_function() {
     auto tmp = read_byte_from_bus(0x3f2);
@@ -9,14 +10,12 @@ void test_dummy_function() {
     write_byte_to_bus(0x3f2, tmp);
 }
 
+void kernel_init() {
+    impl::kalloc_init_pool();
+}
+
 void main() {
-    for(auto y = 0; y < 25; ++y) {
-        for(auto x = 0; x < 80; ++x) {
-            char c = x%10 + '0';
-            char color = x + y*80;
-            set_char(x, y, ' ', 0x0f);
-        }
-    }
+    clear_screen();
     print("Hello world!\n");
     print("Hello world!\n", 0xb1);
     print("Hello world!\n", 0xae);

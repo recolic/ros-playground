@@ -47,4 +47,14 @@ inline void print(const char *cstr, uint8_t color = default_color) {
     }
 }
 
+inline void clear_screen() {
+    for(auto y = 0; y < 25; ++y) {
+        for(auto x = 0; x < 80; ++x) {
+            char c = x%10 + '0';
+            char color = x + y*80;
+            set_char(x, y, ' ', 0x0f);
+        }
+    }   
+}
+
 #endif

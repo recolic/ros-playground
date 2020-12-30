@@ -28,6 +28,8 @@ Just used this mode to launch 64bit long mode. No paging enabled.
 0x1000 - 0x5000 : 64bit long mode paging table**s**
 0x00000000 - 0x00200000 : 512 * 4K pages, before the kernel initializing page table in C++.
 
+(0x0 - 0x100000 are used by kernel structures, 0x100000-0x200000 are used by kalloc(), defined in kutils.hpp)
+
 ## bootloader(legacy) disk model
 
 0-511Byte : bootloader.img from boot.asm, MBR flag  
