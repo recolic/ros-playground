@@ -28,22 +28,24 @@ namespace impl {
     }
 }
 
-inline void *kalloc(const uint32_t requested_size) {
+// naive kalloc
+inline void *kalloc_impl(const uint32_t requested_size) {
     const auto req_size_with_head = requested_size + sizeof(impl::allocated_slot_head_t);
     uint64_t prev_slot_addr = 0x0;
     auto curr_slot_addr = impl::kalloc_begin_addr + sizeof(impl::free_slot_head_t::size);
     while(true) {
         auto curr_slot = (impl::free_slot_head_t *)curr_slot_addr;
         if(curr_slot->size >= req_size_with_head) {
-            // Do the alloc
-            curr_slot->size -= req_size_with_head;
-            if(curr_slot->size < 32) {
+            if(curr_slot->size < 32 + req_size_with_head) {
                 // Give the whole slot
                 if(prev_slot_addr == 0x0) {
                     // No previous slot. I am the first one.
-                    // TODO
+                    // Never give the WHOLE first slot. Try again. 
+                    goto _kalloc_failed_try_again;
                 }
+                // Do the alloc
                 else {
+                    curr_slot->size -= req_size_with_head;
                     auto prev_slot = (impl::free_slot_head_t *)prev_slot_addr;
                     prev_slot->next = curr_slot->next;
                 }
@@ -53,24 +55,26 @@ inline void *kalloc(const uint32_t requested_size) {
             }
             else {
                 // Shrink the slot.
+                // Do the alloc
                 // TODO
-
+                curr_slot->size -= req_size_with_head;
+                return (char *)curr_slot_addr + curr_slot->size;
             }
-
         }
         else if (curr_slot->next != 0x0){
             // Failed. Next.
+_kalloc_failed_try_again:
             prev_slot_addr = curr_slot_addr;
             curr_slot_addr = curr_slot->next;
+            continue;
         }
         else {
             // No memory
             return 0x0;
         }
-
     }
-
 }
+
 
 inline void kfree(void *memory) {
 
