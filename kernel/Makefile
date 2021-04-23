@@ -9,13 +9,13 @@ ARCH = i386
 endif
 
 assemble: kernel head
-	ld -o kernel.img -Ttext 0x7e00 --oformat binary image_head.o kernel.o -m elf_$(ARCH)
+	ld -o kernel.img -fpie -shared --oformat binary image_head.o kernel.o -m elf_$(ARCH)
 
 head:
 	nasm -f elf$(BITS) -DTARGET_BITS=$(BITS) image_head.asm -o image_head.o
 
 kernel:
-	g++ -ffreestanding -fno-pie -c kernel.cc -o kernel.o -m$(BITS) -std=c++17
+	g++ -ffreestanding -fpie -c kernel.cc -o kernel.o -m$(BITS) -std=c++17
 
 clean:
 	rm -f *.o *.img
