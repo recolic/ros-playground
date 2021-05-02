@@ -1,3 +1,7 @@
+
+#include <stdint.h>
+#define ROS_KERN_STDINT_HPP
+
 #ifndef ROS_KERN_STDINT_HPP
 #define ROS_KERN_STDINT_HPP
 

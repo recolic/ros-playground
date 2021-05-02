@@ -15,7 +15,7 @@ head:
 	nasm -f elf$(BITS) -DTARGET_BITS=$(BITS) image_head.asm -o image_head.o
 
 kernel:
-	g++ -ffreestanding -fpie -c kernel.cc -o kernel.o -m$(BITS) -std=c++17
+	g++ -ffreestanding -fpie -fno-exceptions -c kernel.cc -o kernel.o -m$(BITS) -std=c++17
 
 clean:
 	rm -f *.o *.img

@@ -24,7 +24,7 @@ inline void set_char(uint16_t x, uint16_t y, char c, char color) {
     VGA_BEGIN_ADDR[y*VGA_WIDTH + x] = VGA_MAKE_CHAR(c, color);
 }
 
-inline void put_char(char c, uint8_t color) {
+inline void print_char(char c, uint8_t color = default_color) {
     static uint16_t pos = 0;
     if(pos >= VGA_WIDTH * VGA_HEIGHT)
         trigger_scroll(&pos);
@@ -43,7 +43,7 @@ inline void put_char(char c, uint8_t color) {
 
 inline void print(const char *cstr, uint8_t color = default_color) {
     while(*cstr != '\0') {
-        put_char(*(cstr++), color);
+        print_char(*(cstr++), color);
     }
 }
 
