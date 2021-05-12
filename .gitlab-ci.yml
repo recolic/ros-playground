@@ -1,19 +1,14 @@
 image: archlinux:base-devel
 
-stages: 
-    - build
-
 before_script:
     - pacman -Sy
     - pacman -S --noconfirm nasm gcc make
 
 build32:
-    stage: build
     script:
         - make BITS=32
 
 build64:
-    stage: build
     script:
         - make BITS=64
 
