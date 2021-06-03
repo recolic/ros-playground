@@ -33,7 +33,7 @@ void main() {
     //     print_char('0' + test_buf[i], default_color);
     // }
     // std::string s = "cxxhello world";
-    std::basic_string<char, std::char_traits<char>, kallocator<char>> s = "cxx hello world";
-    print(s.c_str());
+    // std::basic_string<char, std::char_traits<char>, kallocator<char>> s = "cxx hello world";
+    // print(s.c_str());
 }
 
